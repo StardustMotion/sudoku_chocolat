@@ -1,8 +1,11 @@
+
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.search.strategy.Search;
 import org.chocosolver.solver.variables.IntVar;
+
+import java.util.Arrays;
 
 
 // IntVar v2 = model.intVar("v2", new int[]{1, 3});
@@ -24,9 +27,23 @@ Modelling: Bounded or Enumerated?
 
 public class Main {
 
+
     public static void main(String[] args) {
 
-        int n = 8;
+
+        // fill an empty sudoku whichever way choco pleases
+        MySudoku sudoku = new MySudoku(7);
+        sudoku.findSolution();
+        sudoku.printSolution();
+
+
+
+
+
+            //System.out.println(message);
+        }
+
+/*
         Model model = new Model(n + "-queens problem");
         IntVar[] vars = new IntVar[n];
         for(int q = 0; q < n; q++){
@@ -42,7 +59,7 @@ public class Main {
         Solution solution = model.getSolver().findSolution();
         if(solution != null){
             System.out.println(solution.toString());
-        }
+        }*/
 
-    }
+
 }
