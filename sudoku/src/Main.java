@@ -32,9 +32,9 @@ public class Main {
 
 
         // fill an empty sudoku whichever way choco pleases
-        MySudoku sudoku = new MySudoku(7);
-        sudoku.findSolution();
-        sudoku.printSolution();
+        MySudoku sudoku = new MySudoku(4);
+        sudoku.solution();
+        sudoku.stats();
 
 
 

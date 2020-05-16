@@ -1,5 +1,6 @@
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solution;
+import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.variables.IntVar;
 
 public class MySudoku {
@@ -13,6 +14,7 @@ public class MySudoku {
     private IntVar[][] grid;
     private int[] sudokuValues;
     private Solution theSolution;
+    private Solver solver;
 
     public MySudoku(int dimension) {
         this.n = dimension;
@@ -35,10 +37,14 @@ public class MySudoku {
 
         // apply the sudoku rules
         applyConstraints();
+
+        solver = model.getSolver();
     }
 
-    public void findSolution() {
-       this.theSolution = model.getSolver().findSolution();
+    // findSolution
+    public void solution() {
+       this.theSolution = solver.findSolution();
+       printSolution();
     }
 
     public void printSolution() {
@@ -96,6 +102,10 @@ public class MySudoku {
             // all numbers on a column are different
             model.allDifferent(blockVals).post();
         }
+    }
+
+    public void stats() {
+        solver.printStatistics();
     }
 
 
