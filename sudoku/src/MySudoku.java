@@ -3,6 +3,9 @@ import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.variables.IntVar;
 
+import java.awt.*;
+import java.util.Random;
+
 public class MySudoku {
 
     private Model model;
@@ -12,11 +15,25 @@ public class MySudoku {
     private String niceASCIIPart;
     private StringBuilder niceASCII;
     private IntVar[][] grid;
+    private int[][] tempGrid;
+    private int gridNumber;
     private int[] sudokuValues;
     private Solution theSolution;
     private Solver solver;
+    private Random randomizer;
 
-    public MySudoku(int dimension) {
+    // Without arguments : generate a 3²x3² sudoku grid on a random difficulty
+    public MySudoku() {
+        new MySudoku(3, "5s", 5, true);
+    }
+
+    // dimension² is the size (height and width) of the sudoku
+    // timelimit is the time written as a string i.e "5s" which is max time allowed to compute
+    // solutionLimit is yes
+    // restart = true will assemble another sudoku from the base node tree -
+                // resulting in better sudoku values diversity
+    public MySudoku(int dimension, String timeLimit, int gridAmount, boolean restart) {
+
         this.n = dimension;
         this.nPow = n * n;
         this.model = new Model("My sudoku of size " + n);
@@ -27,6 +44,9 @@ public class MySudoku {
             niceASCII.append(niceASCIIPart);
 
         grid = new IntVar[nPow][nPow];
+        tempGrid = new int[nPow][nPow];
+
+        randomizer = new Random();
 
         // creates the values domain of each cell
         sudokuValues = new int[nPow];
@@ -39,29 +59,69 @@ public class MySudoku {
         applyConstraints();
 
         solver = model.getSolver();
+        solver.limitTime(timeLimit);
+        solver.limitSolution(gridAmount);
+        if(restart)
+            solver.setRestartOnSolutions();
     }
 
-    // findSolution
-    public void solution() {
-       this.theSolution = solver.findSolution();
-       printSolution();
+    // findSolution/solution
+    // displayAllGrids prints all the grids found while computing if true
+    // else it just prints the one which was picked
+    public void generateGrid(boolean displayAllGrids) {
+       int number = 0;
+       int reservoir;
+       while (solver.solve()) {
+           number++;
+           reservoir = randomizer.nextInt(number);
+           if (reservoir == 0) {
+               gridNumber = number;
+               tempGrid = deepCopyGrid(grid);
+           }
+           if (displayAllGrids) {
+               printGrid(number, deepCopyGrid(grid));
+           }
+       }
+       if (number == 0) { // how even wat
+           System.out.print("No sudoku grid could be found with these parameters.");
+           return;
+       }
+        System.out.print("\n\n\n\nWe selected randomly...");
+
+       printGrid(gridNumber, tempGrid);
+
+
+
+       //if (solver.hasReachedLimit())
+
+       //this.theSolution = solver.findSolution();
+
     }
 
-    public void printSolution() {
-        if(theSolution != null) {
-
-            for (int i = 0; i < nPow; i++) {
-                if ((i) % n == 0)
-                    System.out.print("\n" + niceASCII + "\n");
-                for (int j = 0; j < nPow; j++) {
-                    if ((j) % n == 0)
-                        System.out.print("    ");
-                    System.out.print(" " + grid[i][j].getValue() + " ");
-                    if ((j + 1) % nPow == 0)
-                        System.out.print("\n");
-                }
+    public void printGrid(int number, int[][] someGrid) {
+        System.out.print("\n" + niceASCII + "\nSUDOKU GRID N° " + number + "\n" + niceASCII);
+        for (int i = 0; i < nPow; i++) {
+            if ((i) % n == 0)
+                System.out.println();
+            for (int j = 0; j < nPow; j++) {
+                if ((j) % n == 0)
+                    System.out.print("    ");
+                System.out.print(" " + someGrid[i][j] + " ");
+                if ((j + 1) % nPow == 0)
+                    System.out.print("\n");
             }
         }
+        System.out.print(niceASCII + "\n\n\n");
+    }
+
+    // take the Choco IntVar[][] grid and turn it to an int[][] grid
+    private int[][] deepCopyGrid(IntVar[][] someGrid) {
+        int[][] newGhostGrider = new int[nPow][nPow];
+        for (int i = 0; i < nPow; i++)
+            for (int j = 0; j < nPow; j++)
+                newGhostGrider[i][j] = someGrid[i][j].getValue();
+
+        return newGhostGrider;
     }
 
     private void applyConstraints(){

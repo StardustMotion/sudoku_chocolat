@@ -1,3 +1,4 @@
+// This code will generate a random, filled sudoku grid of size n²*n²
 
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solution;
@@ -30,36 +31,30 @@ public class Main {
 
     public static void main(String[] args) {
 
+        int dimension = 3;
+        String timeLimit = "10s";
+        int maxGridAmount = 500;
+        boolean restart = true;
+        String difficulty;
 
-        // fill an empty sudoku whichever way choco pleases
-        MySudoku sudoku = new MySudoku(4);
-        sudoku.solution();
+        MySudoku sudoku = new MySudoku(dimension, timeLimit, maxGridAmount, restart);
+
+        // find some grids with these parameters. Set arg to TRUE to display all the computed grids
+        sudoku.generateGrid(false);
+
+        // print solution calculation stats
         sudoku.stats();
 
 
 
 
-
-            //System.out.println(message);
-        }
-
-/*
-        Model model = new Model(n + "-queens problem");
-        IntVar[] vars = new IntVar[n];
-        for(int q = 0; q < n; q++){
-            vars[q] = model.intVar("Q_"+q, 1, n);
-        }
-        for(int i  = 0; i < n-1; i++){
-            for(int j = i + 1; j < n; j++){
-                model.arithm(vars[i], "!=",vars[j]).post();
-               //model.arithm(vars[i], "!=", vars[j], "-", j - i).post();
-                model.arithm(vars[i], "!=", vars[j], "+", j - i).post();
-            }
-        }
+    /*
         Solution solution = model.getSolver().findSolution();
         if(solution != null){
-            System.out.println(solution.toString());
-        }*/
+            System.out.println(solution.toString());*/
+        }
+
 
 
 }
+
