@@ -209,4 +209,18 @@ SUDOKU SOLUTION N° 3
 	 is rebuilt from the root.
 	 
 	 
+	 
+	 
+	 
+	 
+Now we'll take the approach where we peak hole in a valid grid to generate sudoku grids for humans.
+This means we'll basically re-use before's model ("generate a grid from an empty one"), however we'll now add more constraints :
+each cell being attributed is a constraint, a helpful one (the cell i,j must be equal to value X : this diminushes the amount of solutions)
+I propose to simply give a n²*n² array to the solution generator, this array either include Null (or None whatever Java uses) if the cell is empty,
+or its value if it's not initially empty. And boom we build one constraint per cell pre-defined this way.
 
+
+UPDATE : ok so the code was restructred and now it's easier to peak holes in the sudoku.
+We can just generate a filled sudoku, manually (or automatically) peak the holes by modifying the int[][] array, and we can now
+rerun the model at each modification! Nice, very good
+We'll see if we can just alter the model instead of rebuilding it everytime though.

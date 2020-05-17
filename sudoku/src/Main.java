@@ -32,28 +32,31 @@ public class Main {
     public static void main(String[] args) {
 
         int dimension = 3;
-        String timeLimit = "10s";
-        int maxGridAmount = 500;
+        String timeLimit = "3s";
         boolean restart = true;
         String difficulty;
 
-        MySudoku sudoku = new MySudoku(dimension, timeLimit, maxGridAmount, restart);
+        // Generate a random but valid, finished Sudoku grid of size dimension²*dimension², the process
+        // is allowed to take up to timeLimit time
+        MySudoku sudoku = new MySudoku(dimension, timeLimit); //maxSolutions, restart
+        int[][] sudokuGrid = sudoku.getGrid();
 
-        // find some grids with these parameters. Set arg to TRUE to display all the computed grids
-        sudoku.generateGrid(false);
-
-        // print solution calculation stats
-        sudoku.stats();
-
-
-
-
-    /*
-        Solution solution = model.getSolver().findSolution();
-        if(solution != null){
-            System.out.println(solution.toString());*/
+        // We clear some cells
+        for (int i = 0; i < dimension*dimension; i++) {
+            for (int j = 0; j < dimension*dimension; j = j+2) {
+                System.out.println("Cell " + i + j + " was cleared!");
+                sudokuGrid[i][j] = 0;
+            }
         }
 
+        String timeLimitToSolve = "3s";
+        // a "good" sudoku is supposed to only have 1 solution.
+        // This variables displays up to maxSolutions solutions if they exist
+        int maxSolutions = 10;
+        // Solve the given sudokuGrid (a int[][] data). "blanks" in the grid are represented by the value 0
+        // (this prints the solution)
+        MySudoku sudokuToSolve = new MySudoku(dimension, timeLimitToSolve, maxSolutions, sudokuGrid);
+    }
 
 
 }
