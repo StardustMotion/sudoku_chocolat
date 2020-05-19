@@ -43,6 +43,15 @@ public class Main {
         MySudoku sudoku = new MySudoku(dimension, timeLimit); //maxSolutions, restart
         int[][] sudokuGrid = sudoku.getGrid();
 
+        // an array telling is a i,j cell has been attempted to be removed. If the randomly chosen cell
+        // to be blanked has its value on this array to TRUE then don't try to pop it.
+        // tl;dr this is used to not compute twice a cell whose removal would lead to several sudokus solutions
+        boolean[][] checkedCells = new boolean[square][square];
+        for (int i = 0; i < square; i++)
+            for (int j = 0; j < square; j++)
+                checkedCells[i][j] = false;
+
+
         /*
         // We clear some cells
         for (int i = 0; i < dimension*dimension; i++) {
@@ -57,15 +66,29 @@ public class Main {
         // This variables displays up to maxSolutions solutions if they exist
         int maxSolutions = 3;
 
+        MySudoku tmpSudoku;
+        int[][] tmpSudokuGrid = sudoku.getGrid();
+
         int tame = 0;
+        int[] rememberMe; // contains [i, j, prevValue] which was pecked at
         do {
-            peckAHole(square, sudokuGrid);
+            rememberMe = peckAHole(square, sudokuGrid, checkedCells);
+
+            // solve it !
+            tmpSudoku = new MySudoku(dimension, timeLimitToSolve, 2, tmpSudokuGrid);
+            // this has more than one solution?
+            if (tmpSudoku.solveSudoku() > 1) {
+                System.out.println("GRRRRRRRRRRRRR");
+                // we put the last value we popped into the grid. This cell won't be treated again
+                tmpSudokuGrid[rememberMe[0]][rememberMe[1]] = rememberMe[2];
+            }
             tame++;
 
-            copiedCodeFromMySudoku(square, dimension, sudokuGrid);
 
-        } while (tame <10);
+        } while (tame < 80);
+        if (rememberMe == null) { System.out.println("\n\nCrossed the entire grid and found nothing valid to pop!\n\n"); }
 
+        copiedCodeFromMySudoku(square, dimension, sudokuGrid);
 
         // Solve the given sudokuGrid (a int[][] data). "blanks" in the grid are represented by the value 0
         // (this prints the solution)
@@ -75,7 +98,8 @@ public class Main {
     // choose a random cell in soemGrid to dig a hole into.
     // If the position already had one, then from that random position
     // go forward until you find one without a hole to dig from
-    public static void peckAHole(int dimsquare, int[][] someGrid) {
+    // Returns the [iIndex, jIndex, value] of the cell which was 0'd
+    public static int[] peckAHole(int dimsquare, int[][] someGrid, boolean[][] checkCells) {
         Random randomizer = new Random();
         int gridCells = dimsquare*dimsquare;
         int superValue = randomizer.nextInt(gridCells);
@@ -84,16 +108,17 @@ public class Main {
             temp = (superValue % gridCells);
             iIndex = temp / dimsquare;
             jIndex = temp % dimsquare;
-            if (someGrid[iIndex][jIndex] != 0) {
+            if (!checkCells[iIndex][jIndex] && someGrid[iIndex][jIndex] != 0) {
+                int tmpValue = someGrid[iIndex][jIndex];
+                checkCells[iIndex][jIndex] = true;
                 someGrid[iIndex][jIndex] = 0;
-                System.out.println("\n>>> Popped(" + (iIndex+1) + "," + (jIndex+1) + ")");
-                //return someGrid; // object modification is implied here in Java
-                break;
+                System.out.println("\n>>> Popped(" + (iIndex+1) + "," + (jIndex+1) + ") = " + tmpValue);
+                return new int[]{iIndex, jIndex, tmpValue};
             }
             superValue++;
         }
 
-
+        return null;
     }
 
     // print sudoku stuff

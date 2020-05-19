@@ -89,7 +89,7 @@ public class MySudoku {
         this.sudokuSolver = model.getSolver();
         sudokuSolver.limitTime(timeLimitToSolve);
         sudokuSolver.limitSolution(maxSolutions);
-        solveSudoku();
+        //solveSudoku();
     }
 
 
@@ -178,14 +178,16 @@ public class MySudoku {
     }
 
     // Find the solution(s) and print them for the sudoku given as input (Constructor B)
-    private void solveSudoku() {
+    // return the amount of solutions found
+    public int solveSudoku() {
         int n = 0;
         while (sudokuSolver.solve()) {
             n++;
             grid = deepCopyGrid(tempGrid);
-            printGrid(n, grid, "SOLUTION N° ");
+            //printGrid(n, grid, "SOLUTION N° ");
         }
-        stats();
+        //stats();
+        return n;
     }
 
 
