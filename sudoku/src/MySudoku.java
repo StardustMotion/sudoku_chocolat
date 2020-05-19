@@ -1,7 +1,14 @@
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.search.strategy.Search;
+import org.chocosolver.solver.search.strategy.assignments.DecisionOperator;
+import org.chocosolver.solver.search.strategy.selectors.values.IntDomainMax;
+import org.chocosolver.solver.search.strategy.selectors.values.IntDomainMin;
+import org.chocosolver.solver.search.strategy.selectors.variables.AntiFirstFail;
+import org.chocosolver.solver.search.strategy.selectors.variables.FirstFail;
 import org.chocosolver.solver.variables.IntVar;
+
 
 import java.awt.*;
 import java.util.Random;
@@ -41,6 +48,10 @@ public class MySudoku {
         applyConstraints();
         this.sudokuSolver = model.getSolver();
         sudokuSolver.limitTime(timeLimit);
+        //sudokuSolver.setSearch(org.chocosolver.solver.search.strategy.selectors.variables.ActivityBased(5));
+        //sudokuSolver.setSearch(
+        //        Search.intVarSearch(new AntiFirstFail(model), new IntDomainMax()));
+
         sudokuSolver.setRestartOnSolutions();
         //sudokuSolver.limitSolution(maxSolutions);
         generateSudokuGrid();
@@ -81,6 +92,37 @@ public class MySudoku {
         solveSudoku();
     }
 
+
+    /*         CONSTRUCTOR C (in building)
+    // Generates a sudoku based on the filled initialGrid
+    public MySudoku(int[][] initialGrid, String timeLimitToSolve, int maxSolutions, int difficulty) {
+        MySudoku
+        sudokuSetup(dimension, "Solving the input Sudoku");
+
+        int cellVal;
+        // All the sudoku values are between 1 and dimension², except for the one already assigned obviously
+        for (int i = 0; i < nPow; i++) {
+            for (int j = 0; j < nPow; j++) {
+                cellVal = holeSudoku[i][j];
+                // blank
+                if (cellVal == 0)
+                    tempGrid[i][j] = model.intVar("c("+Integer.toString(i+1) + "," + Integer.toString(j+1) + ")",
+                            sudokuValues);
+                    // pre-defined
+                else
+                    tempGrid[i][j] = model.intVar("c("+Integer.toString(i+1) + "," + Integer.toString(j+1) + ")",
+                            cellVal);
+            }
+        }
+
+        // apply the sudoku rules (row/column/block constraints)
+        applyConstraints();
+        this.sudokuSolver = model.getSolver();
+        sudokuSolver.limitTime(timeLimitToSolve);
+        sudokuSolver.limitSolution(maxSolutions);
+        solveSudoku();
+    }*/
+
     // Common stuff between the sudoku solver and the sudoku grid generator
     private void sudokuSetup(int dimension, String modelName) {
         this.n = dimension;
@@ -117,6 +159,7 @@ public class MySudoku {
                 picked = n;
                 grid = deepCopyGrid(tempGrid);
             }
+            //printGrid(n, deepCopyGrid(tempGrid), "SUDOKU GRID N° ");
             //if (displayAllGrids) {
             //    printGrid(number, deepCopyGrid(grid));
             //}
