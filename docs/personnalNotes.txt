@@ -224,3 +224,30 @@ UPDATE : ok so the code was restructred and now it's easier to peak holes in the
 We can just generate a filled sudoku, manually (or automatically) peak the holes by modifying the int[][] array, and we can now
 rerun the model at each modification! Nice, very good
 We'll see if we can just alter the model instead of rebuilding it everytime though.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0  0  0      0  4  0      9  0  6 
+     8  0  3      0  0  0      0  0  0 
+     0  0  0      0  0  0      0  0  3 
+
+     0  0  1      0  0  7      0  0  0 
+     0  0  0      0  0  2      0  3  5 
+     9  6  0      3  0  0      0  0  0 
+
+     0  0  0      0  0  0      0  4  0 
+     0  2  5      0  0  9      0  0  0 
+     0  0  0      2  5  0      8  0  0 
+	 
+	 My program generated this shit, it has 20 clues (that's quite low, it rarely goes that deep - usually about 23-25 clues are given)

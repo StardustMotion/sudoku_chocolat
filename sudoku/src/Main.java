@@ -29,11 +29,16 @@ Modelling: Bounded or Enumerated?
 
 public class Main {
 
+    // count how much times the "peakHole" function was called
+    //static int truc;
 
+    static int clues;
     public static void main(String[] args) {
 
+        //truc = 0;
         int dimension = 3;
         int square = dimension*dimension;
+        clues = square*square;
         String timeLimit = "1s";
         boolean restart = true;
         int difficulty = 1; //1 to 4
@@ -79,14 +84,17 @@ public class Main {
             // this has more than one solution?
             if (tmpSudoku.solveSudoku() > 1) {
                 System.out.println("GRRRRRRRRRRRRR");
+                clues++;
                 // we put the last value we popped into the grid. This cell won't be treated again
                 tmpSudokuGrid[rememberMe[0]][rememberMe[1]] = rememberMe[2];
             }
             tame++;
 
 
-        } while (tame < 80);
-        if (rememberMe == null) { System.out.println("\n\nCrossed the entire grid and found nothing valid to pop!\n\n"); }
+        } while (rememberMe != null);
+        if (rememberMe == null) {
+            System.out.println("\n\nWent through the entire grid to produce for you this beauty.\n" + (clues-1) + " clues."  + "\n"); }
+        //System.out.println("OUAIS OUAIS OUAIS " + truc);
 
         copiedCodeFromMySudoku(square, dimension, sudokuGrid);
 
@@ -100,6 +108,7 @@ public class Main {
     // go forward until you find one without a hole to dig from
     // Returns the [iIndex, jIndex, value] of the cell which was 0'd
     public static int[] peckAHole(int dimsquare, int[][] someGrid, boolean[][] checkCells) {
+        //truc++;
         Random randomizer = new Random();
         int gridCells = dimsquare*dimsquare;
         int superValue = randomizer.nextInt(gridCells);
@@ -112,6 +121,7 @@ public class Main {
                 int tmpValue = someGrid[iIndex][jIndex];
                 checkCells[iIndex][jIndex] = true;
                 someGrid[iIndex][jIndex] = 0;
+                clues--;
                 System.out.println("\n>>> Popped(" + (iIndex+1) + "," + (jIndex+1) + ") = " + tmpValue);
                 return new int[]{iIndex, jIndex, tmpValue};
             }
