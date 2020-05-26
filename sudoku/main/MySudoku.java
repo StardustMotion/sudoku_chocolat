@@ -1,16 +1,12 @@
+package truc;
+
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
-import org.chocosolver.solver.search.strategy.Search;
-import org.chocosolver.solver.search.strategy.assignments.DecisionOperator;
-import org.chocosolver.solver.search.strategy.selectors.values.IntDomainMax;
-import org.chocosolver.solver.search.strategy.selectors.values.IntDomainMin;
-import org.chocosolver.solver.search.strategy.selectors.variables.AntiFirstFail;
-import org.chocosolver.solver.search.strategy.selectors.variables.FirstFail;
 import org.chocosolver.solver.variables.IntVar;
 
+import truc.MySudoku;
 
-import java.awt.*;
 import java.util.Random;
 
 public class MySudoku {
@@ -21,8 +17,9 @@ public class MySudoku {
     private int nPow;
     private String niceASCIIPart = "==============";
     private StringBuilder niceASCII;
-    private int[][] grid;
-    private IntVar[][] tempGrid;
+    public int[][] grid;
+    public IntVar[][] tempGrid;
+
     private int[][] preGrid;
     private int[] sudokuValues;
     private Solver sudokuSolver;
@@ -65,7 +62,7 @@ public class MySudoku {
     // means blank cell.
     // and shows at best maxSolutions solutions if there are more than 1, or none if.. there's none
     // NB : a "good" sudoku is supposed to only have ONE solution
-    public MySudoku(int dimension, String timeLimitToSolve, int maxSolutions, int[][] holeSudoku) {
+    public MySudoku(int dimension, String timeLimitToSolve, int maxSolutions, int[][] holeSudoku, boolean humanSearch) {
         sudokuSetup(dimension, "Solving the input Sudoku");
 
         int cellVal;
@@ -89,14 +86,20 @@ public class MySudoku {
         this.sudokuSolver = model.getSolver();
         sudokuSolver.limitTime(timeLimitToSolve);
         sudokuSolver.limitSolution(maxSolutions);
+        /*this.sudokuSolver.plugMonitor(new IMonitorContradiction() {
+            @Override
+            public void onContradiction(ContradictionException cex) {
+                System.out.print("h");
+            }
+        });*/
         //solveSudoku();
     }
 
 
     /*         CONSTRUCTOR C (in building)
     // Generates a sudoku based on the filled initialGrid
-    public MySudoku(int[][] initialGrid, String timeLimitToSolve, int maxSolutions, int difficulty) {
-        MySudoku
+    public truc.MySudoku(int[][] initialGrid, String timeLimitToSolve, int maxSolutions, int difficulty) {
+        truc.MySudoku
         sudokuSetup(dimension, "Solving the input Sudoku");
 
         int cellVal;
@@ -123,6 +126,14 @@ public class MySudoku {
         solveSudoku();
     }*/
 
+
+
+
+
+
+
+
+
     // Common stuff between the sudoku solver and the sudoku grid generator
     private void sudokuSetup(int dimension, String modelName) {
         this.n = dimension;
@@ -145,7 +156,14 @@ public class MySudoku {
 
 
 
-
+    // deep copies a int[][] object
+    public int[][] deepCopyPrimitiveGrid(int[][] oldGrid) {
+        int[][] newGhostGrider = new int[nPow][nPow];
+        for (int i = 0; i < nPow; i++)
+            for (int j = 0; j < nPow; j++)
+                newGhostGrider[i][j] = oldGrid[i][j];
+        return newGhostGrider;
+    }
 
 
     private void generateSudokuGrid() {
@@ -271,7 +289,7 @@ public class MySudoku {
         return newGhostGrider;
     }
 
-    public int[][] getGrid() { return this.grid; }
+    public int[][] getGrid() { return deepCopyGrid(tempGrid); }
 
     public void stats() { sudokuSolver.printStatistics(); }
 
