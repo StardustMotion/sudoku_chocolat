@@ -1,11 +1,8 @@
-package truc;
+package main;
 
 import org.chocosolver.solver.Model;
-import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.variables.IntVar;
-
-import truc.MySudoku;
 
 import java.util.Random;
 
@@ -98,8 +95,8 @@ public class MySudoku {
 
     /*         CONSTRUCTOR C (in building)
     // Generates a sudoku based on the filled initialGrid
-    public truc.MySudoku(int[][] initialGrid, String timeLimitToSolve, int maxSolutions, int difficulty) {
-        truc.MySudoku
+    public main.MySudoku(int[][] initialGrid, String timeLimitToSolve, int maxSolutions, int difficulty) {
+        main.MySudoku
         sudokuSetup(dimension, "Solving the input Sudoku");
 
         int cellVal;

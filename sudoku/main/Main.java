@@ -1,4 +1,4 @@
-package truc;// This code will generate a random, filled sudoku grid of size n²*n²
+package main;// This code will generate a random, filled sudoku grid of size n²*n²
 import java.util.Random;
 
 // IntVar v2 = model.intVar("v2", new int[]{1, 3});
@@ -161,7 +161,7 @@ public class Main {
 
         // Solve the given sudokuGrid (a int[][] data). "blanks" in the grid are represented by the value 0
         // (this prints the solution)
-        //truc.MySudoku sudokuToSolve = new truc.MySudoku(dimension, timeLimitToSolve, maxSolutions, sudokuGrid);
+        //main.MySudoku sudokuToSolve = new main.MySudoku(dimension, timeLimitToSolve, maxSolutions, sudokuGrid);
 
     }
 
